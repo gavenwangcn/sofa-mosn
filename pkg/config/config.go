@@ -23,6 +23,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/alipay/sofa-mosn/pkg/admin"
+
 	"github.com/alipay/sofa-mosn/pkg/api/v2"
 	"github.com/json-iterator/go"
 )
@@ -63,6 +65,7 @@ type MOSNConfig struct {
 	Servers         []ServerConfig         `json:"servers,omitempty"`         //server config
 	ClusterManager  ClusterManagerConfig   `json:"cluster_manager,omitempty"` //cluster config
 	ServiceRegistry v2.ServiceRegistryInfo `json:"service_registry"`          //service registry config, used by service discovery module
+	Admin           admin.AdminConfig      `json:"admin,omitempty""`          // admin config, such as admin server port
 	//tracing config
 	RawDynamicResources jsoniter.RawMessage `json:"dynamic_resources,omitempty"` //dynamic_resources raw message
 	RawStaticResources  jsoniter.RawMessage `json:"static_resources,omitempty"`  //static_resources raw message

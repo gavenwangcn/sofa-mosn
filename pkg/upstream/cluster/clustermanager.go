@@ -23,6 +23,8 @@ import (
 	"net"
 	"sync"
 
+	"github.com/alipay/sofa-mosn/pkg/admin"
+
 	"reflect"
 
 	"github.com/alipay/sofa-mosn/pkg/api/v2"
@@ -112,15 +114,21 @@ type primaryCluster struct {
 func (cm *clusterManager) AddOrUpdatePrimaryCluster(cluster v2.Cluster) bool {
 	clusterName := cluster.Name
 
+	isOk := false
 	if v, exist := cm.primaryClusters.Load(clusterName); exist {
 		if !v.(*primaryCluster).addedViaAPI {
 			return false
 		}
 		// update cluster
-		return cm.updateCluster(cluster, v.(*primaryCluster), true)
+		isOk = cm.updateCluster(cluster, v.(*primaryCluster), true)
+	} else {
+		// add new cluster
+		isOk = cm.loadCluster(cluster, true)
 	}
-	// add new cluster
-	return cm.loadCluster(cluster, true)
+	if isOk {
+		admin.SetClusterConfig(clusterName, &cluster)
+	}
+	return isOk
 }
 
 func (cm *clusterManager) ClusterExist(clusterName string) bool {
@@ -232,6 +240,7 @@ func (cm *clusterManager) UpdateClusterHosts(clusterName string, priority uint32
 				hosts = append(hosts, NewHost(hc, pcc.Info()))
 			}
 			concretedCluster.UpdateHosts(hosts)
+			admin.SetHosts(clusterName, hostConfigs)
 			return nil
 		}
 

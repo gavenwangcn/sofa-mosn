@@ -18,12 +18,13 @@
 package config
 
 import (
-	"github.com/envoyproxy/go-control-plane/envoy/api/v2/core"
-	"github.com/gogo/protobuf/types"
 	"reflect"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/envoyproxy/go-control-plane/envoy/api/v2/core"
+	"github.com/gogo/protobuf/types"
 
 	"github.com/alipay/sofa-mosn/pkg/api/v2"
 	xdsapi "github.com/envoyproxy/go-control-plane/envoy/api/v2"
@@ -339,9 +340,9 @@ func Test_convertListenerConfig(t *testing.T) {
 				DrainType: xdsapi.Listener_DEFAULT,
 			}
 
-			got := convertListenerConfig(listenerConfig);
+			got := convertListenerConfig(listenerConfig)
 			if data, err := json.Marshal(got); err == nil {
-				if (strings.Compare(tt.want, string(data)) != 0) {
+				if strings.Compare(tt.want, string(data)) != 0 {
 					t.Errorf("convertListenerConfig(xdsListener *xdsapi.Listener)\ngot=%s\nwant=%s\n", string(data), tt.want)
 				}
 			} else {
